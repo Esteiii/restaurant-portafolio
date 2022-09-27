@@ -1,0 +1,107 @@
+<div class="row m-3">
+  <div class="col-xs-12 col-lg-6 col-xl-6">
+    <h1>
+      Mesa: {{ currentTable.Number }}
+    </h1>
+    <hr />
+    <form  (ngSubmit)="save(tableForm)" #tableForm="ngForm">
+      <div class="row">
+        <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+            <label for="number">N&uacute;mero:</label>
+            <input name="number"
+                   #number="ngModel"
+                   [(ngModel)]="currentTable.Number"
+                   required
+                   type="text"
+                   class="form-control"
+                   [pattern]="numberPattern"
+                   id="number"
+                   placeholder="Ingresa el número de la mesa">
+            <small *ngIf="number.errors?.required" class="form-text text-muted">Campo requerido.</small>
+            <small *ngIf="number.errors?.pattern" class="form-text text-muted">Solo se aceptan n&uacute;meros.</small>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+            <label for="category-desc">Descripci&oacute;n:</label>
+            <input name="description"
+                   #description="ngModel"
+                   [(ngModel)]="currentTable.Description"
+                   type="text"
+                   class="form-control"
+                   id="table-description"
+                   placeholder="Ingresa una pequeña descripción">
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+            <label for="capacity">M&aacute;ximo de personas:</label>
+            <input name="capacity"
+                   #capacity="ngModel"
+                   [(ngModel)]="currentTable.Capacity"
+                   required
+                   type="text"
+                   [pattern]="numberPattern"
+                   class="form-control"
+                   id="capacity"
+                   placeholder="Cantidad m&aacute;xima de personas para la mesa.">
+            <small *ngIf="capacity.errors?.required" class="form-text text-muted">Campo requerido.</small>
+            <small *ngIf="capacity.errors?.pattern" class="form-text text-muted">Solo se aceptan n&uacute;meros.</small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <button name="save-btn" type="submit" class="btn btn-success" style="margin-right: 5px;" [disabled]="!tableForm.valid || tableForm.pristine || loading">
+            <fa-icon [icon]="icons.faSave" [fixedWidth]="true"></fa-icon>&nbsp;
+            Guardar
+          </button>
+          <button (click)="cancel()" name="cancel-btn" type="button" class="btn btn-danger">
+            <fa-icon [icon]="icons.faTimes" [fixedWidth]="true"></fa-icon>&nbsp;
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-xs-12 col-lg-6 col-xl-6">
+    <h1> Mesas </h1>
+    <hr />
+    <table class="table table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Descripci&oacute;n</th>
+          <th scope="col">N° Personas</th>
+          <th scope="col">Acciones </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let table of tables | paginate: paginationConfig">
+          <td>{{ table.Number }}</td>
+          <td>{{ table.Description }}</td>
+          <td>{{ table.Capacity }}</td>
+          <td>
+            <button (click)="edit(table, tableForm)" type="button" class="btn btn-sm btn-default" style="margin-right: 5px;">
+              <fa-icon [icon]="icons.faEdit" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button [swal]="{ title: 'Advertencia!', text: '¿Está seguro de querer eliminar la mesa?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Eliminar', cancelButtonText: 'Cancelar', confirmButtonColor: '#218838' }"
+                    (confirm)="delete(table)"
+                    type="button" class="btn btn-default btn-sm">
+              <fa-icon [icon]="icons.faTrashAlt" [fixedWidth]="true"></fa-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="pagination" class="text-center">
+      <pagination-controls (pageChange)="pageChanged($event)"
+                           previousLabel="Atrás"
+                           nextLabel="Siguiente"
+                           autoHide="true"
+                           responsive="true">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

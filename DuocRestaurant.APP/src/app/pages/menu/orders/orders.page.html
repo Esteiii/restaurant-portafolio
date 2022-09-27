@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Órdenes</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="close()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="reloadOrders($event)">
+        <ion-refresher-content>
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <ion-list style="margin-bottom: 30px;">
+        <ion-item *ngFor="let order of orders">
+            <ion-label>
+                <h2><b> {{ getOrderTotal(order) | currency:'CLP' }} </b></h2>
+                <ul>
+                    <li *ngFor="let detail of order.OrderDetails">
+                        {{detail.Count}} x {{ detail.ProductId ? detail.Product.Name : detail.Recipe.Name }}
+                    </li>
+                </ul>
+                <span *ngIf="order.Note">Nota: <i> {{ order.Note }}</i></span>
+            </ion-label>
+            <ion-badge slot="end" [color]="getStateBadgeColor(order)">
+                {{getStateBadge(order)}}
+            </ion-badge>
+        </ion-item>
+    </ion-list>
+
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="tryPay()"
+                        *ngIf="showPayButton()">
+            <ion-icon name="cash-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
